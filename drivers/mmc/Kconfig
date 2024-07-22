@@ -144,6 +144,11 @@ config HS_STATUS_EMMC_CUST_SH
 	depends on MMC_EMMC_CUST_SH
 	default n
 
+config SUPPORT_V5_1_EMMC_CUST_SH
+	bool "SHARP eMMC customization for memory version 5.1 support"
+	depends on MMC_EMMC_CUST_SH
+	default n
+
 config MMC_SD_CUST_SH
 	bool "SHARP SD driver customized"
 	depends on MMC_CUST_SH

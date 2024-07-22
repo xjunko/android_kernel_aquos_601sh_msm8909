@@ -434,6 +434,81 @@ static int msm8x16_wcd_ahb_read_device(struct msm8x16_wcd *msm8x16_wcd,
 	return 0;
 }
 
+/* SH_AUDIO_DRIVER -> */ /*A-003*/
+char onoff_micbias1_enable=0;
+
+static int msm8x16_wcd_spmi_write_device_debug_withonofftime(u16 reg, u8 *value, u32 bytes)
+{
+
+	int ret;
+	u8 disable_value;
+	struct msm8x16_wcd_spmi *wcd = NULL;
+
+	ret = get_spmi_msm8x16_wcd_device_info(&reg, &wcd);
+	if (ret) {
+		pr_err("%s: Invalid register address\n", __func__);
+		return ret;
+	}
+
+	if (wcd == NULL) {
+		pr_err("%s: Failed to get device info\n", __func__);
+		return -ENODEV;
+	}
+//enable micbias1 and wait for "ontime" start
+	ret = spmi_ext_register_writel(wcd->spmi->ctrl, wcd->spmi->sid, wcd->base + reg, value, bytes);
+	if (ret)
+		pr_err("Unable to write to addr=%x, ret(%d)\n", reg, ret);
+	/* Try again if the write fails */
+	if (ret != 0) {
+		usleep(10);
+		ret = spmi_ext_register_writel(wcd->spmi->ctrl, wcd->spmi->sid,
+						wcd->base + reg, value, 1);
+		if (ret != 0) {
+			pr_err("failed to write the device\n");
+			return ret;
+		}
+	}
+	usleep(2000);
+//enable micbias1 and wait for "ontime" end
+
+//disable micbias1 and wait for "offtime" start
+	disable_value=((*value)&0x7F);
+	ret = spmi_ext_register_writel(wcd->spmi->ctrl, wcd->spmi->sid, wcd->base + reg, &disable_value, bytes);
+	if (ret)
+		pr_err("Unable to write to addr=%x, ret(%d)\n", reg, ret);
+	/* Try again if the write fails */
+	if (ret != 0) {
+		usleep(10);
+		ret = spmi_ext_register_writel(wcd->spmi->ctrl, wcd->spmi->sid,
+						wcd->base + reg, value, 1);
+		if (ret != 0) {
+			pr_err("failed to write the device\n");
+			return ret;
+		}
+	}
+	usleep(2000);
+//disable micbias1 and wait for "offtime" end
+
+//enable micbias1 start
+	ret = spmi_ext_register_writel(wcd->spmi->ctrl, wcd->spmi->sid, wcd->base + reg, value, bytes);
+	if (ret)
+		pr_err("Unable to write to addr=%x, ret(%d)\n", reg, ret);
+	/* Try again if the write fails */
+	if (ret != 0) {
+		usleep(10);
+		ret = spmi_ext_register_writel(wcd->spmi->ctrl, wcd->spmi->sid,
+						wcd->base + reg, value, 1);
+		if (ret != 0) {
+			pr_err("failed to write the device\n");
+			return ret;
+		}
+	}
+//enable micbias1 end
+	pr_debug("write sucess register = %x val = %x\n", reg, *value);
+	return 0;
+}
+/* SH_AUDIO_DRIVER <- */ /*A-003*/
+
 static int msm8x16_wcd_spmi_write_device(u16 reg, u8 *value, u32 bytes)
 {
 
@@ -502,7 +577,14 @@ int msm8x16_wcd_spmi_read(unsigned short reg, int bytes, void *dest)
 
 int msm8x16_wcd_spmi_write(unsigned short reg, int bytes, void *src)
 {
-	return msm8x16_wcd_spmi_write_device(reg, src, bytes);
+/* SH_AUDIO_DRIVER -> */ /*A-003*/
+	if((onoff_micbias1_enable == 1)&&(reg == 0x140)&&((*(u8 *)src&0x80) == 0x80)&&(bytes == 1)) {
+		onoff_micbias1_enable=0;
+		return msm8x16_wcd_spmi_write_device_debug_withonofftime(reg, src, bytes);
+	} else {
+		return msm8x16_wcd_spmi_write_device(reg, src, bytes);
+	}
+/* SH_AUDIO_DRIVER <- */ /*A-003*/
 }
 
 static int __msm8x16_wcd_reg_read(struct snd_soc_codec *codec,
@@ -2666,7 +2748,12 @@ static int msm8x16_wcd_codec_enable_micbias(struct snd_soc_dapm_widget *w,
 			snd_soc_update_bits(codec,
 				MSM8X16_WCD_A_ANALOG_MICB_1_EN, 0x05, 0x04);
 		if (w->reg == MSM8X16_WCD_A_ANALOG_MICB_1_EN)
+/* SH_AUDIO_DRIVER -> */ /*A-003*/
+		{
+			onoff_micbias1_enable=1;
 			msm8x16_wcd_configure_cap(codec, true, micbias2);
+		}
+/* SH_AUDIO_DRIVER <- */ /*A-003*/
 
 		break;
 	case SND_SOC_DAPM_POST_PMU:
