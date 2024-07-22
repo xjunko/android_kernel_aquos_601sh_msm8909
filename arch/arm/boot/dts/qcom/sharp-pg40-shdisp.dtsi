@@ -1,0 +1,111 @@
+/* Copyright (c) 2015, The Linux Foundation. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+#include "sharp-shdisp-bd6118gu.dtsi"
+#include "sharp-shdisp-dsi-panel-columbus-pg-video.dtsi"
+#include "sharp-shdisp-columbus.dtsi"
+#include "sharp-shdisp-subdisplay.dtsi"
+
+&soc {
+	sharp,shdisp_kerl {
+		status = "disable";
+		compatible = "sharp,shdisp_kerl";
+		test_mode_gpio = <&msm_gpio 93 0>;
+	};
+};
+
+&soc {
+	sharp,shdisp_kerl {
+		status = "ok";
+	};
+
+	sharp,shdisp_bd6118gu {
+		status = "ok";
+	};
+
+	sharp,shdisp_columbus {
+		status = "ok";
+	};
+
+	blsp1_spi5: spi@78b9000 {
+		sub_spi@0 {
+			status = "ok";
+		};
+	};
+
+	sharp,shdisp_subdisplay {
+		status = "ok";
+	};
+};
+
+&dsi_shdisp_columbus {
+	status = "ok";
+
+	qcom,mdss-pan-physical-width-dimension = <42>;
+	qcom,mdss-pan-physical-height-dimension = <74>;
+};
+
+&mdss_mdp {
+	qcom,mdss-pref-prim-intf = "dsi";
+};
+
+&mdss_dsi0 {
+	qcom,dsi-pref-prim-pan=<&dsi_shdisp_columbus>;
+	vdda-supply = <&pm8916_l2>;
+	/delete-property/ vdd-supply;
+	/delete-property/ vddio-supply;
+	/delete-property/ pinctrl-names;
+	/delete-property/ pinctrl-0;
+	/delete-property/ pinctrl-1;
+	/delete-property/ qcom,platform-reset-gpio;
+	/delete-property/ qcom,platform-bklight-en-gpio;
+
+	/delete-node/ qcom,panel-supply-entries;
+};
+
+&mdss_dsi0_pll {
+	vddio-supply = <&pm8916_l6>;
+};
+
+&pmx_mdss {
+	/delete-property/ qcom,num-grp-pins;
+	/delete-property/ qcom,pins;
+};
+
+&pmx_mdss_te {
+	/delete-property/ qcom,num-grp-pins;
+	/delete-property/ qcom,pins;
+};
+
+&soc {
+	tlmm_pinmux: pinctrl@1000000 {
+		cdc-ext-pa-lines {
+			qcom,pins = <&gp 94>, <&gp 96>;
+			qcom,num-grp-pins = <2>;
+		};
+	};
+};
+
+/ {
+	memory {
+		display_mem: display_mem@0 {
+			linux,reserve-contiguous-region;
+			linux,reserve-region;
+			reg = <0 0 0 0x00800000>;
+			label = "display_mem";
+		};
+	};
+};
+
+&mdss_fb0 {
+	linux,contiguous-region = <&display_mem>;
+};

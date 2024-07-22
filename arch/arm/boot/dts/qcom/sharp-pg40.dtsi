@@ -1,0 +1,244 @@
+/* Copyright (c) 2014, The Linux Foundation. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+#include "sharp_pinctrl/sharp-pinctrl-pg40.dtsi"
+#include "sharp-pg40-usb.dtsi"
+
+/*****************************************/
+/*  BLSP1                                */
+/*****************************************/
+/*---------------------*/
+/* BLSP1 QUP0(BLSP#1)  */
+/*---------------------*/
+&i2c_1 {
+	status = "ok";
+	
+	shtrpd@74 {
+		status = "ok";
+		compatible = "sharp,shtrpd";
+		reg = <0x74>;
+		sharp,key-int = <&msm_gpio 31 0x00>;
+		sharp,key-rst = <&msm_gpio 52 0x00>;
+		sharp,model-1 = <&msm_gpio 29 0x00>;
+		sharp,model-2 = <&msm_gpio 71 0x00>;
+		sharp,model-3 = <&msm_gpio 8  0x00>;
+
+		pinctrl-names = "key_int_active","key_int_suspend",
+						"key_rst_active","key_rst_suspend";
+		pinctrl-0 = <&key_int_active>;
+		pinctrl-1 = <&key_int_suspend>;
+		pinctrl-2 = <&key_rst_active>;
+		pinctrl-3 = <&key_rst_suspend>;
+	};
+};
+
+&uart_1 {
+	status = "ok";
+};
+
+/*---------------------*/
+/* BLSP1 QUP1(BLSP#2)  */
+/*---------------------*/
+&i2c_2 {
+	status = "ok";
+	
+	lis2dh@18 {
+		status = "ok";
+		reg = <0x18>;
+		compatible = "st,lis2dh_acc";
+		interrupt-parent = <&msm_gpio>;
+		interrupts = <98 0>;
+		qcom,shmds-gpio-int0 = <&msm_gpio 98 0>;
+		pinctrl-names = "shmds_int0_active","shmds_int0_suspend";
+		pinctrl-0 = <&shmds_int0_active>;
+		pinctrl-1 = <&shmds_int0_suspend>;
+		orientation = <1 0 0
+					   0 1 0
+					   0 0 1>;
+	};
+	sensorhub@2C {
+		status = "ok";
+		compatible = "sharp,sensorhub";
+		reg = <0x2C>;
+		interrupt-parent = <&msm_gpio>;
+		interrupts = <96 0>;
+		qcom,shub-gpio-reset = <&msm_gpio 98 0>;
+		qcom,shub-gpio-brmp = <&msm_gpio 49 0>;
+		qcom,shub-gpio-int0 = <&msm_gpio 96 0>;
+		pinctrl-names = "shub_reset_active","shub_reset_suspend",
+						"shub_int0_active","shub_int0_suspend",
+						"shub_int0_pullup","shub_int0_pulldown",
+						"shub_brmp_active","shub_brmp_suspend";
+		pinctrl-0 = <&shub_reset_active>;
+		pinctrl-1 = <&shub_reset_suspend>;
+		pinctrl-2 = <&shub_int0_active>;
+		pinctrl-3 = <&shub_int0_suspend>;
+		pinctrl-4 = <&shub_int0_pullup>;
+		pinctrl-5 = <&shub_int0_pulldown>;
+		pinctrl-6 = <&shub_brmp_active>;
+		pinctrl-7 = <&shub_brmp_suspend>;
+		shub,shub_acc_axis_val = <1>;
+		shub,shub_gyro_axis_val = <1>;
+		shub,shub_mag_axis_val = <0>;
+	};
+};
+
+&uart_2 {
+	status = "ok";
+};
+
+/*---------------------*/
+/* BLSP1 QUP2(BLSP#3)  */
+/*---------------------*/
+&spi_3 {
+	status = "ok";
+
+	shdtv_spi@0 {
+		status = "ok";
+		compatible = "sharp,shdtv_spi";
+		reg = <0>;
+		spi-max-frequency = <20000000>;
+/*		spi-cpol; */
+/*		spi-cpha; */
+	};
+};
+
+/*---------------------*/
+/* BLSP1 QUP3(BLSP#4)  */
+/*---------------------*/
+&i2c_4 {
+	status = "ok";
+	
+	shbatt_i2c@7d {
+		compatible = "SMB1360";
+		reg = <0x7d>;
+	};
+	
+	shswic_i2c@6a {
+		status = "ok";
+		compatible = "sharp,shswic_i2c";
+		reg = <0x6a>;
+		sharp,vc-det = <&msm_gpio 28 0x00>;
+		sharp,hs-det = <&msm_gpio 36 0x00>;
+		sharp,sw-int = <&msm_gpio 97 0x00>;
+
+		pinctrl-names = "vc_det_active","vc_det_suspend",
+						"hs_det_active","hs_det_suspend",
+						"sw_int_active","sw_int_suspend";
+		pinctrl-0 = <&vc_det_active>;
+		pinctrl-1 = <&vc_det_suspend>;
+		pinctrl-2 = <&hs_det_active>;
+		pinctrl-3 = <&hs_det_suspend>;
+		pinctrl-4 = <&sw_int_active>;
+		pinctrl-5 = <&sw_int_suspend>;
+	};
+};
+
+/*---------------------*/
+/* BLSP1 QUP4(BLSP#5)  */
+/*---------------------*/
+&spi_5 {
+	status = "ok";
+};
+
+/*---------------------*/
+/* BLSP1 QUP5(BLSP#6)  */
+/*---------------------*/
+&i2c_6 {
+	status = "ok";
+};
+
+#include "sharp-pg40-shdisp.dtsi"
+
+&soc {
+	gpio_keys {
+		compatible = "gpio-keys";
+		input-name = "gpio-keys";
+		pinctrl-names = "tlmm_gpio_key_active","tlmm_gpio_key_suspend";
+		pinctrl-0 = <&gpio_key_active>;
+		pinctrl-1 = <&gpio_key_suspend>;
+
+		side_key {
+			label = "side_key";
+			gpios = <&msm_gpio 12 0x1>;
+			linux,input-type = <1>;
+			linux,code = <212>;
+			gpio-key,wakeup;
+			debounce-interval = <15>;
+		};
+
+		s5_key {
+			label = "s5_key";
+			gpios = <&msm_gpio 90 0x1>;
+			linux,input-type = <1>;
+			linux,code = <0x2f4>;
+			gpio-key,wakeup;
+			debounce-interval = <15>;
+		};
+
+		s7_key {
+			label = "s7_key";
+			gpios = <&msm_gpio 20 0x1>;
+			linux,input-type = <1>;
+			linux,code = <0x2fc>;
+			gpio-key,wakeup;
+			debounce-interval = <15>;
+		};
+	};
+
+	keyboard_backlight {
+		compatible = "keyboard_backlight";
+	};
+
+	flip_switch {
+		compatible = "flip_switch";
+		qcom,flip-det-gpio  = <&msm_gpio 94 0x00>;
+		interrupt-parent  = <&msm_gpio>;
+		interrupts = <94 0>;
+		interrupt-names = "flip_det";
+		pinctrl-names = "flip_det_active","flip_det_suspend";
+		pinctrl-0 = <&flip_det_active>;
+		pinctrl-1 = <&flip_det_suspend>;
+	};
+
+    tunctrl {
+        compatible = "tunctrl";
+		qcom,dtv-en-gpio = <&msm_gpio 9 0x00>;
+		pinctrl-names = "dtv_rst_active","dtv_rst_suspend";
+		pinctrl-0 = <&dtv_rst_active>;
+		pinctrl-1 = <&dtv_rst_suspend>;
+    };
+
+/* => SH_AUDIO_DRIVER 17-001 */
+	sound {
+/* => SH_AUDIO_DRIVER 17-004 */
+		qcom,msm-mbhc-hphl-swh = <1>;
+		qcom,msm-mbhc-gnd-swh = <1>;
+/* <= SH_AUDIO_DRIVER 17-004 */
+		qcom,audio-routing =
+			"RX_BIAS", "MCLK",
+			"SPK_RX_BIAS", "MCLK",
+			"INT_LDO_H", "MCLK",
+			"MIC BIAS External", "Handset Mic",
+			"MIC BIAS Internal2", "Headset Mic",
+			"AMIC1", "MIC BIAS External",
+			"AMIC2", "MIC BIAS Internal2";
+/* => SH_AUDIO_DRIVER 17-002 */
+		pinctrl-0 = <&cdc_pdm_lines_act>;
+		pinctrl-1 = <&cdc_pdm_lines_sus>;
+		/delete-property/ qcom,cdc-us-euro-gpios;
+/* <= SH_AUDIO_DRIVER 17-002 */
+	};
+/* <= SH_AUDIO_DRIVER 17-001 */
+};
+
+#include "sharp-pg40-chg-param.dtsi"

@@ -1,0 +1,263 @@
+/* Copyright (c) 2015, The Linux Foundation. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+&soc {
+	tlmm_pinmux: pinctrl@1000000 {
+		compatible = "qcom,msm-tlmm-8916";
+		reg = <0x1000000 0x300000>;
+		interrupts = <0 208 0>;
+
+		/*****************************************/
+		/*  pinctrl customize setting            */
+		/*****************************************/
+		bdic_rst_gpio{
+			qcom,pins = <&gp 30>;
+			qcom,pin-func = <0>;
+			qcom,num-grp-pins = <1>;
+			label = "bdic_rst_gpio";
+			pinctrl_test_active: active {
+				drive-strength = <2>;
+				bias-pull-up;
+			};
+			pinctrl_test_suspend: suspend {
+				drive-strength = <2>;
+				bias-disable;
+			};
+		};
+	/*****************************************/
+	/*  UART/Serial                          */
+	/*****************************************/
+		blsp1_serial1_tx_active {
+			qcom,pins = <&gp 4>;
+			qcom,num-grp-pins = <1>;
+			qcom,pin-func = <2>;
+			label = "blsp1_serial1_tx_active";
+			serial1_tx_active: default {
+				drive-strength = <2>;
+				bias-disable;
+			};
+		};
+
+		blsp1_serial1_tx_sleep {
+			qcom,pins = <&gp 4>;
+			qcom,num-grp-pins = <1>;
+			qcom,pin-func = <0>;
+			label = "blsp1_serial1_tx_sleep";
+			serial1_tx_sleep: sleep {
+				drive-strength = <2>;
+				bias-disable;
+			};
+		};
+
+		blsp1_serial1_rx_active {
+			qcom,pins = <&gp 5>;
+			qcom,num-grp-pins = <1>;
+			qcom,pin-func = <2>;
+			label = "blsp1_serial1_rx_active";
+			serial1_rx_active: default {
+				drive-strength = <2>;
+				bias-pull-up;
+			};
+		};
+
+		blsp1_serial1_rx_sleep {
+			qcom,pins = <&gp 5>;
+			qcom,num-grp-pins = <1>;
+			qcom,pin-func = <0>;
+			label = "blsp1_serial1_rx_sleep";
+			serial1_rx_sleep: sleep {
+				drive-strength = <2>;
+				bias-pull-up;
+			};
+		};
+
+//		blsp1_serial2_tx_rx_active {
+//			qcom,pins = <&gp 20>, <&gp 21>;
+//			qcom,num-grp-pins = <2>;
+//			qcom,pin-func = <0>;
+//			label = "blsp1_serial2_tx_rx_active";
+//			serial2_tx_rx_active: default {
+//				drive-strength = <2>;
+//				bias-pull-up;
+//			};
+//		};
+//
+//		blsp1_serial2_tx_rx_sleep {
+//			qcom,pins = <&gp 20>, <&gp 21>;
+//			qcom,num-grp-pins = <2>;
+//			qcom,pin-func = <0>;
+//			label = "blsp1_serial2_tx_rx_sleep";
+//			serial2_tx_rx_sleep: sleep {
+//				drive-strength = <2>;
+//				bias-pull-up;
+//			};
+//		};
+
+    /*****************************************/
+	/*  SPI                                  */
+	/*****************************************/
+		blsp1_spi3_active_mo_cs_clk {
+			qcom,pins = <&gp 0>, <&gp 2>, <&gp 3>;
+			qcom,num-grp-pins = <3>;
+			qcom,pin-func = <1>;
+			label = "blsp1_spi3_active_mo_cs_clk";
+
+			blsp1_spi3_mo_cs_clk_active: blsp1_spi3_mo_cs_clk_active {
+				drive-strength = <2>;
+				bias-disable;
+			};
+		};
+
+		blsp1_spi3_active_mi{
+			qcom,pins = <&gp 1>;
+			qcom,num-grp-pins = <1>;
+			qcom,pin-func = <1>;
+			label = "blsp1_spi3_active_mi";
+			
+			blsp1_spi3_mi_active: blsp1_spi3_mi_active {
+				drive-strength = <2>;
+				bias-pull-up;
+			};
+		};
+
+		blsp1_spi3_sleep {
+			qcom,pins = <&gp 0>, <&gp 1>, <&gp 2>, <&gp 3>;
+			qcom,num-grp-pins = <4>;
+			qcom,pin-func = <0>;
+			label = "blsp1_spi3_sleep";
+
+			blsp1_spi3_sleep: blsp1_spi3_sleep {
+				drive-strength = <2>;
+				bias-pull-up;
+			};
+		};
+
+		blsp1_spi5_mo_cs_clk {
+			qcom,pins = <&gp 16>, <&gp 18>, <&gp 19>;
+			qcom,num-grp-pins = <3>;
+			qcom,pin-func = <1>;
+			label = "blsp1_spi5_mo_cs_clk";
+
+			blsp1_spi5_mo_cs_clk_active: blsp1_spi5_mo_cs_clk_active {
+					       drive-strength = <4>;
+					       bias-disable;
+		        };
+
+			blsp1_spi5_mo_cs_clk_sleep: blsp1_spi5_mo_cs_clk_sleep {
+					       drive-strength = <4>;
+					       bias-disable;
+		        };
+		};
+
+    /*****************************************/
+	/*  I2C                                  */
+	/*****************************************/
+		pmx_i2c_1_active {
+			qcom,pins = <&gp 6>, <&gp 7>; /* SDA, SCL */
+			qcom,num-grp-pins = <2>;
+			qcom,pin-func = <3>;
+			label = "pmx_i2c_1_active";
+
+			blsp1_i2c1_active: blsp1_i2c1_active {
+				drive-strength = <2>;
+				bias-disable;
+			};
+		};
+
+		pmx_i2c_1_sleep {
+			qcom,pins = <&gp 6>, <&gp 7>; /* SDA, SCL */
+			qcom,num-grp-pins = <2>;
+			qcom,pin-func = <3>;
+			label = "pmx_i2c_1_sleep";
+
+			blsp1_i2c1_sleep: blsp1_i2c1_sleep {
+				drive-strength = <2>;
+				bias-disable;
+			};
+		};
+
+		pmx_i2c_2_active {
+			qcom,pins = <&gp 111>, <&gp 112>; /* SDA, SCL */
+			qcom,num-grp-pins = <2>;
+			qcom,pin-func = <3>;
+			label = "pmx_i2c_2_active";
+
+			blsp1_i2c2_active: blsp1_i2c2_active {
+				drive-strength = <2>;
+				bias-disable;
+			};
+		};
+		
+		pmx_i2c_2_sleep {
+			qcom,pins = <&gp 111>, <&gp 112>; /* SDA, SCL */
+			qcom,num-grp-pins = <2>;
+			qcom,pin-func = <3>;
+			label = "pmx_i2c_2_sleep";
+
+			blsp1_i2c2_sleep: blsp1_i2c2_sleep {
+				drive-strength = <2>;
+				bias-disable;
+			};
+		};
+
+		pmx_i2c_4_active {
+			qcom,pins = <&gp 14>, <&gp 15>; /* SDA, SCL */
+			qcom,num-grp-pins = <2>;
+			qcom,pin-func = <2>;
+			label = "pmx_i2c_4_active";
+
+			blsp1_i2c4_active: blsp1_i2c4_active {
+				drive-strength = <2>;
+				bias-disable;
+			};
+		};
+
+		pmx_i2c_4_sleep {
+			qcom,pins = <&gp 14>, <&gp 15>; /* SDA, SCL */
+			qcom,num-grp-pins = <2>;
+			qcom,pin-func = <2>;
+			label = "pmx_i2c_4_sleep";
+
+			blsp1_i2c4_sleep: blsp1_i2c4_sleep {
+				drive-strength = <2>;
+				bias-disable;
+			};
+		};
+
+		pmx_i2c_6_active {
+			qcom,pins = <&gp 10>, <&gp 11>; /* SDA, SCL */
+			qcom,num-grp-pins = <2>;
+			qcom,pin-func = <2>;
+			label = "pmx_i2c_6_active";
+
+			i2c_6_active: i2c_6_active {
+				drive-strength = <6>;
+				bias-disable;
+			};
+		};
+
+		pmx_i2c_6_sleep {
+			qcom,pins = <&gp 10>, <&gp 11>; /* SDA, SCL */
+			qcom,num-grp-pins = <2>;
+			qcom,pin-func = <2>;
+			label = "pmx_i2c_6_sleep";
+
+			i2c_6_sleep: i2c_6_sleep {
+				drive-strength = <6>;
+				bias-disable;
+			};
+		};
+	};
+};
+
+#include "sharp_pinctrl/sharp-pinctrl-8909-irda.dtsi"
+

@@ -1,0 +1,16 @@
+#
+# SH Boot Configuration
+#
+
+menu "SHBoot driver"
+
+config SHBOOT_CUST
+	bool "SHARP BOOT CUSTOMIZE"
+	depends on SHSYS_CUST
+	default n
+
+config SHSECBOOT_CUST
+	bool "SHARP SECBOOT CUSTOMIZE"
+	default y
+
+endmenu
